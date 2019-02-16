@@ -1,0 +1,2 @@
+--INSERT INTO PRODUCT (IMAGE_PATH_IN_FRONT_END,PRICE,PRODUCT_NAME) 
+--VALUES ('ff',20000,'[대구백화점 1관] [시에로코스메틱]유니 어 데이');
