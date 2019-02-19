@@ -26,9 +26,9 @@ public class OrderDetailsResourceAssembler extends ResourceAssemblerSupport<Orde
 	}
 
 	@Override
-	public OrderDetailsResource toResource(OrderDetails orderdetails) {
-		
-		return null;
+	public OrderDetailsResource toResource(OrderDetails orderDetails) {
+		OrderDetailsResource resource = new OrderDetailsResource(orderDetails);
+		return resource;
 	}
 	
 	public Resources<Resource<OrderDetails>> toResources(List<OrderDetails> list, Long id){

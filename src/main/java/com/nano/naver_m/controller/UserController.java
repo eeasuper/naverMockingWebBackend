@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
@@ -52,20 +53,12 @@ public class UserController {
 	
 	@Autowired
 	SignUpService signupService;
+	@Autowired
 	SignInService signinService;
 	
 	@RequestMapping(method = RequestMethod.GET, value = "/api/users", produces = {MediaType.APPLICATION_JSON_VALUE})
 	public
 	Resources<Resource<User>> all(){
-		//create new UserResource object for each user found by findall().
-		//put them all in a List to use stream() on. Then do rest of the code.
-//		List<User> users = new ArrayList<User>();
-		
-//		repository.findAll().stream()
-//				.forEach((user)->{
-//					UserResource userRes = new UserResource(user.getToken(),user, user.getId());
-//					users.add(userRes);
-//				});
 		List<Resource<User>> user = repository.findAll().stream().map(assembler::toResource)
 				.collect(Collectors.toList());
 		
@@ -81,7 +74,7 @@ public class UserController {
 		//successful curl request:
 		//curl -v localhost:8080/register --header "Accept: application/json" --header "Content-Type: application/json" --data "{\"name\":\"test1\",\"username\":\"testusername1\",\"password\":\"testpassword1\",\"email\":\"testemail1\", \"token\":\"testtoken\"}"
 		User user = signupService.signup(res, newUser);
-		TokenAuthenticationService.addAuthentication(newUser);
+//		TokenAuthenticationService.addAuthentication(newUser);
 //		UserResource userResource = new UserResource(jWTtoken,user,user.getId()); 
 		
 		Resource<User> resource = assembler.toResource(user);
@@ -91,16 +84,31 @@ public class UserController {
 	}
 	
 	@RequestMapping(method = RequestMethod.POST, value = "/login", produces = {MediaType.APPLICATION_JSON_VALUE})
-	ResponseEntity<?> signIn(@RequestBody User newUser) throws URISyntaxException{
-		//I don't know if authenticating user through passing json data from the backend is good practice. It's possible you have to use Spring's Authentication classes to do things properly. For the sake of time and getting things done, I will keep things like this.
-		User user = signinService.signIn(newUser.getUsername(), newUser.getPassword());
-		TokenAuthenticationService.addAuthentication(user);
-		
+	ResponseEntity<?> signIn(@RequestBody User newUser, HttpServletRequest req,  HttpServletResponse res) throws URISyntaxException{
+		//successful curl request:
+		//curl -v localhost:8080/login --header "Accept: application/json" --header "Content-Type: application/json" --data "{\"name\":\"name\",\"username\":\"username\",\"password\":\"password\",\"email\":\"email@email.com\", \"token\":\"testtoken\"}"
+		//curl -v localhost:8080/login -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VybmFtZSJ9.xOXxbTzfz7eQKjacwVVkOhT0oodx58GX6Wi7e3aiM0Q" -H "Accept: application/json" --header "Content-Type: application/json" --user username:password --data "{\"name\":\"name\",\"username\":\"username\",\"password\":\"password\",\"email\":\"email@email.com\", \"token\":\"testtoken\"}"
+		//https://stackoverflow.com/questions/22453550/custom-authentication-provider-not-being-called/22457561#22457561
+		//curl -v localhost:8080/login -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VybmFtZSJ9.xOXxbTzfz7eQKjacwVVkOhT0oodx58GX6Wi7e3aiM0Q" -H "Accept: application/json" --header "Content-Type: application/x-www-form-urlencoded" --data "username=username&password=password"
+		//https://stackoverflow.com/questions/31826233/custom-authentication-manager-with-spring-security-and-java-configuration
+		logger.info("processing login");
+		String jwtHeader = req.getHeader("Authorization");
+		logger.info("header: "+ jwtHeader);
+//		newUser.setToken(jwtHeader);
+		logger.info("user:"+newUser.getUsername()+" "+ newUser.getPassword());
+		User user = signinService.signIn(newUser.getUsername(), newUser.getPassword(), jwtHeader, res);
+		logger.info("processing...");
 		Resource<User> resource = assembler.toResource(user);
-
-		return ResponseEntity
-				.created(new URI(resource.getId().expand().getHref()))
-				.body(resource);
+		int status = res.getStatus();
+		
+		if(status == 201 || status == 200) {
+			return ResponseEntity
+					.created(new URI(resource.getId().expand().getHref()))
+					.body(resource);
+		}else {
+			return ResponseEntity.status(status).build();
+		}
+		
 	}
 	
 //	@CrossOrigin(origins = "http://localhost:3000")

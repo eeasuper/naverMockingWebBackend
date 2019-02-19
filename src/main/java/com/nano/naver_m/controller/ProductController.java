@@ -33,7 +33,8 @@ public class ProductController {
 	@RequestMapping(method = RequestMethod.GET, value = "/api/products", produces = {MediaType.APPLICATION_JSON_VALUE})
 	public 
 	Resources<Resource<Product>> all(){
-		
+		//successful authentication and retrieval of api (this example can be used for others):
+		//curl -v localhost:8080/api/products -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VybmFtZSJ9.xOXxbTzfz7eQKjacwVVkOhT0oodx58GX6Wi7e3aiM0Q"
 		List<Resource<Product>> products = repository.findAll().stream()
 				.map(assembler :: toResource)
 				.collect(Collectors.toList());
