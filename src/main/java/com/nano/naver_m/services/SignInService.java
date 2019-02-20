@@ -34,7 +34,7 @@ public class SignInService {
 	
     static final long EXPIRATIONTIME = 864_000_000; // 10 days
     
-    static final String SECRET = "ThisIsASecret";
+    static final String SECRET = "Fjapsijf0183lFlso0slfs";
      
     static final String TOKEN_PREFIX = "Bearer";
      

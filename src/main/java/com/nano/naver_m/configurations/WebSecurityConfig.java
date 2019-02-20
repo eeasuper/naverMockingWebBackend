@@ -32,7 +32,7 @@ import com.nano.naver_m.filter.JWTLoginFilter;
 @EnableWebSecurity
 @ComponentScan("com.nano.naver_m.configurations")
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
-	
+	//The commented code below should only be uncommented when /login should be mapped to JWTLoginFilter.
 //	@Autowired
 //	private CustomAuthenticationProvider authenticationProvider;
 
@@ -60,12 +60,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
         		.authorizeRequests()
                 .antMatchers("/").permitAll()
                 .antMatchers(HttpMethod.POST, "/login").permitAll() 
-//                .antMatchers(HttpMethod.GET, "/login").permitAll() // For Test on Browser
+                .antMatchers(HttpMethod.GET, "/login").permitAll() // For Test on Browser
                 .antMatchers(HttpMethod.POST, "/register").permitAll()
+//                .antMatchers("/users/**").permitAll() //For Test
+//                .antMatchers("/api/**").permitAll() //For Test
 //                .anyRequest().permitAll() // this line is for test.
                 .anyRequest().authenticated()
+
                 .and().headers().frameOptions().disable()
                 .and()
+        		//The filter below should only be uncommented when /login should be mapped to JWTLoginFilter.
 //                .addFilterBefore(new JWTLoginFilter("/login", authenticationManager()),
 //                        UsernamePasswordAuthenticationFilter.class) // this line is commented out for reasons written in the JWTLoginFilter.class
                 .addFilterBefore(new JWTAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
