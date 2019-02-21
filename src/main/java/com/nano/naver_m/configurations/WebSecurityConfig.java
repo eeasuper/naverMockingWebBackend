@@ -89,7 +89,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements C
 	}
 	
     @Override
-//    @DependsOn("corsConfigurer")
+    @DependsOn({"getCorsConfiguration"})
     protected void configure(HttpSecurity http) throws Exception {
     	
         http.cors().and().csrf().disable()
