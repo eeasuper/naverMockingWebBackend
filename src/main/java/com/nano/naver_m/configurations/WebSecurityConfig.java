@@ -3,28 +3,21 @@ package com.nano.naver_m.configurations;
 
 
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.security.SecurityProperties;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.Ordered;
-import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.ProviderManager;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
 import com.nano.naver_m.filter.JWTAuthenticationFilter;
-import com.nano.naver_m.filter.JWTLoginFilter;
 
 
 
@@ -53,6 +46,22 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 //    	auth.authenticationProvider(authenticationProvider);
 //    }   
 //	
+	@Bean
+//	public FilterRegistrationBean corsFilter() {
+	public CorsConfiguration corsConfigurationSource() {
+		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+		CorsConfiguration config = new CorsConfiguration();
+		config.setAllowCredentials(true);
+		config.addAllowedOrigin("https://naver-mock-app.herokuapp.com/");
+		config.addAllowedHeader("*");
+		config.addAllowedMethod("*");
+//		source.registerCorsConfiguration("/**", config);
+		return config;
+//		FilterRegistrationBean bean = new FilterRegistrationBean(new CorsFilter(source.getCorsConfiguration(exchange)));
+//		bean.setOrder(0);
+//		return bean;
+	}
+	
     @Override
     protected void configure(HttpSecurity http) throws Exception {
     	
