@@ -35,7 +35,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements C
 
 	
 //	@Autowired JWTLoginFilter loginFilter;
-	@Autowired UserRepository repository;
 	
 //	@Autowired AuthenticationManager authMan;
 //	@Autowired
@@ -67,35 +66,33 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements C
 ////		return bean;
 //	}
 	private final String frontEndDomain = "https://naver-mock-app.herokuapp.com";
-	 @Bean
-	    public WebMvcConfigurer corsConfigurer() {
-	        return new WebMvcConfigurer() {
-	            @Override
-	            public void addCorsMappings(CorsRegistry registry) {
-	                registry.addMapping("/users/*/cart/**").allowedOrigins(frontEndDomain)
-	            		.allowedMethods("DELETE", "POST", "GET");
-	                registry.addMapping("/register").allowedOrigins(frontEndDomain)
-	                	.allowedMethods("POST");
-	                registry.addMapping("/login").allowedOrigins(frontEndDomain)
-	            		.allowedMethods("POST");
-	                registry.addMapping("/api/users/**").allowedOrigins(frontEndDomain)
-	            		.allowedMethods("POST", "GET", "PUT", "DELETE");
-	                registry.addMapping("/users/*").allowedOrigins(frontEndDomain)
-	            		.allowedMethods("GET");
-	                registry.addMapping("/api/products/**").allowedOrigins(frontEndDomain)
-	            		.allowedMethods("GET");
-	            }
-	        };
-	}
+//	 @Bean
+//	    public WebMvcConfigurer corsConfigurer() {
+//	        return new WebMvcConfigurer() {
+//	            @Override
+//	            public void addCorsMappings(CorsRegistry registry) {
+//	                registry.addMapping("/users/*/cart/**").allowedOrigins(frontEndDomain)
+//	            		.allowedMethods("DELETE", "POST", "GET");
+//	                registry.addMapping("/register").allowedOrigins(frontEndDomain)
+//	                	.allowedMethods("POST");
+//	                registry.addMapping("/login").allowedOrigins(frontEndDomain)
+//	            		.allowedMethods("POST");
+//	                registry.addMapping("/api/users/**").allowedOrigins(frontEndDomain)
+//	            		.allowedMethods("POST", "GET", "PUT", "DELETE");
+//	                registry.addMapping("/users/*").allowedOrigins(frontEndDomain)
+//	            		.allowedMethods("GET");
+//	                registry.addMapping("/api/products/**").allowedOrigins(frontEndDomain)
+//	            		.allowedMethods("GET");
+//	            }
+//	        };
+//	}
 	
     @Override
-    @DependsOn({"getCorsConfiguration"})
     protected void configure(HttpSecurity http) throws Exception {
     	
         http.cors().and().csrf().disable()
         		.authorizeRequests()
-                .antMatchers("/").permitAll()
-                .antMatchers(HttpMethod.POST, "/login").permitAll() 
+//                .antMatchers(HttpMethod.POST, "/login").permitAll() 
                 .antMatchers(HttpMethod.GET, "/login").permitAll() // For Test on Browser
                 .antMatchers(HttpMethod.POST, "/register").permitAll()
 //                .antMatchers("/users/**").permitAll() //For Test
@@ -108,12 +105,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements C
         		//The filter below should only be uncommented when /login should be mapped to JWTLoginFilter.
 //                .addFilterBefore(new JWTLoginFilter("/login", authenticationManager()),
 //                        UsernamePasswordAuthenticationFilter.class) // this line is commented out for reasons written in the JWTLoginFilter.class
-                .addFilterBefore(new JWTAuthenticationFilter(repository), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(new JWTAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 
     }
 
 	@Override
-	@Bean
 	public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
 		CorsConfiguration config = new CorsConfiguration();
 		config.setAllowCredentials(true);

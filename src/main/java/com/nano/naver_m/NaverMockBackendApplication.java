@@ -24,26 +24,15 @@ public class NaverMockBackendApplication {
 	public void configureJackson(ObjectMapper jackson2ObjectMapper) {
 	    jackson2ObjectMapper.setVisibility(PropertyAccessor.ALL, Visibility.ANY);
 	}
-	 @Bean
-	    public WebMvcConfigurer corsConfigurer() {
-	        return new WebMvcConfigurer() {
-	            @Override
-	            public void addCorsMappings(CorsRegistry registry) {
-	            	registry.addMapping("/**").allowedOrigins(frontEndDomain);
-//	                registry.addMapping("/users/*/cart/**").allowedOrigins(frontEndDomain)
-//	            		.allowedMethods("DELETE", "POST", "GET");
-//	                registry.addMapping("/register").allowedOrigins(frontEndDomain)
-//	                	.allowedMethods("POST");
-//	                registry.addMapping("/login").allowedOrigins(frontEndDomain)
-//	            		.allowedMethods("POST");
-//	                registry.addMapping("/api/users/**").allowedOrigins(frontEndDomain)
-//	            		.allowedMethods("POST", "GET", "PUT", "DELETE");
-//	                registry.addMapping("/users/*").allowedOrigins(frontEndDomain)
-//	            		.allowedMethods("GET");
-//	                registry.addMapping("/api/products/**").allowedOrigins(frontEndDomain)
-//	            		.allowedMethods("GET");
-	            }
-	        };
-	}
+//	 @Bean
+//	    public WebMvcConfigurer corsConfigurer() {
+//	        return new WebMvcConfigurer() {
+//	            @Override
+//	            public void addCorsMappings(CorsRegistry registry) {
+//	            	registry.addMapping("/**").allowedOrigins(frontEndDomain);
+//
+//	            }
+//	        };
+//	}
 }
 

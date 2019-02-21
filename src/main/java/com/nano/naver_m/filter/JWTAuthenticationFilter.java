@@ -3,6 +3,7 @@ package com.nano.naver_m.filter;
 import java.io.IOException;
 
 import javax.servlet.FilterChain;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletRequestWrapper;
@@ -29,26 +30,29 @@ import com.nano.naver_m.services.TokenAuthenticationService;
 //@Order(Ordered.HIGHEST_PRECEDENCE)
 public class JWTAuthenticationFilter extends GenericFilterBean {
    
-	private final UserRepository repository;
+	@Autowired
+	private UserRepository repository;
 	
-	public JWTAuthenticationFilter(UserRepository repository){
-		this.repository = repository;
-	}
 	
    @Override
    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
            throws IOException, ServletException {
 	   //Shouldn't comment this out for Rest API!...I don't know why...
        System.out.println("JWTAuthenticationFilter.doFilter");
-       
-       Authentication authentication = TokenAuthenticationService
-               .getAuthentication((HttpServletRequest) servletRequest);
-       //authentication here is a 'hollow' usernamepasswordtoken with just the username set as authentication.
-       User user = repository.findByUsername(authentication.getName()).orElseThrow(() -> new UserNotFoundException((long) 1));;
-       if(user != null) {
-    	   SecurityContextHolder.getContext().setAuthentication(authentication);
+       HttpServletRequest req = (HttpServletRequest) servletRequest;
+       String uri = req.getRequestURI().toString();
+       System.out.println(uri);
+       if(!uri.startsWith("/login") || !uri.startsWith("/register")) {
+	       Authentication authentication = TokenAuthenticationService
+	               .getAuthentication((HttpServletRequest) servletRequest);
+	       //authentication here is a 'hollow' usernamepasswordtoken with just the username set as authentication.
+	       System.out.println("JWTAuthenticationFilter.doFilter repository search");
+	       User user = repository.findByUsername(authentication.getName()).orElseThrow(() -> new UserNotFoundException((long) 1));;
+	       System.out.println("JWTAuthenticationFilter.doFilter repository serach finished");
+	       if(user != null) {
+	    	   SecurityContextHolder.getContext().setAuthentication(authentication);
+	       }
        }
-        
        filterChain.doFilter(servletRequest, servletResponse);
    }
 }
