@@ -15,6 +15,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.web.access.channel.ChannelProcessingFilter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -22,6 +23,7 @@ import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
 import com.nano.naver_m.filter.JWTAuthenticationFilter;
+import com.nano.naver_m.filter.testFilter;
 
 
 
@@ -86,6 +88,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 
                 .and().headers().frameOptions().disable()
                 .and()
+                .addFilterBefore(new testFilter(), ChannelProcessingFilter.class)
         		//The filter below should only be uncommented when /login should be mapped to JWTLoginFilter.
 //                .addFilterBefore(new JWTLoginFilter("/login", authenticationManager()),
 //                        UsernamePasswordAuthenticationFilter.class) // this line is commented out for reasons written in the JWTLoginFilter.class
