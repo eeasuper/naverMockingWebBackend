@@ -42,7 +42,7 @@ public class JWTAuthenticationFilter extends GenericFilterBean {
        HttpServletRequest req = (HttpServletRequest) servletRequest;
        String uri = req.getRequestURI().toString();
        System.out.println(uri);
-       if(!uri.startsWith("/login") || !uri.startsWith("/register")) {
+       if(!uri.startsWith("/login") && !uri.startsWith("/register")) {
 	       Authentication authentication = TokenAuthenticationService
 	               .getAuthentication((HttpServletRequest) servletRequest);
 	       //authentication here is a 'hollow' usernamepasswordtoken with just the username set as authentication.
