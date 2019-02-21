@@ -89,7 +89,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements C
 	}
 	
     @Override
-    @DependsOn("corsConfigurer")
+//    @DependsOn("corsConfigurer")
     protected void configure(HttpSecurity http) throws Exception {
     	
         http.cors().and().csrf().disable()
@@ -113,10 +113,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements C
     }
 
 	@Override
+	@Bean
 	public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
 		CorsConfiguration config = new CorsConfiguration();
 		config.setAllowCredentials(true);
-		config.addAllowedOrigin("https://naver-mock-app.herokuapp.com/");
+		config.addAllowedOrigin("https://naver-mock-app.herokuapp.com");
 		config.addAllowedHeader("*");
 		config.addAllowedMethod("*");
 		return config;
