@@ -11,9 +11,13 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
+import org.springframework.context.annotation.Bean;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE)
@@ -32,7 +36,14 @@ public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
 //    response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");
 //    response.setHeader("Access-Control-Max-Age", "3600");
 //    response.setHeader("Access-Control-Allow-Headers", "Content-Type, Origin, Authorization");
-
+	UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+	CorsConfiguration config = new CorsConfiguration();
+	config.setAllowCredentials(true);
+	config.addAllowedOrigin("https://naver-mock-app.herokuapp.com");
+	config.addAllowedHeader("*");
+	config.addAllowedMethod("*");
+	source.registerCorsConfiguration("/**", config);
+	
     chain.doFilter(req, res);
 }
 //

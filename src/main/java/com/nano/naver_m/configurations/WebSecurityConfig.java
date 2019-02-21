@@ -3,13 +3,14 @@ package com.nano.naver_m.configurations;
 
 
 
+import java.util.Arrays;
+
 import javax.servlet.http.HttpServletRequest;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.DependsOn;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -17,18 +18,17 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
 import com.nano.naver_m.filter.JWTAuthenticationFilter;
-import com.nano.naver_m.repository.UserRepository;
 
 
 
 @Configuration
 @EnableWebSecurity
 @ComponentScan("com.nano.naver_m.configurations")
-public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements CorsConfigurationSource{
+public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 	//The commented code below should only be uncommented when /login should be mapped to JWTLoginFilter.
 //	@Autowired
 //	private CustomAuthenticationProvider authenticationProvider;
@@ -49,22 +49,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements C
 //    	auth.authenticationProvider(authenticationProvider);
 //    }   
 //	
-//	@Bean
-////	public FilterRegistrationBean corsFilter() {
-//	public CorsConfiguration corsConfigurationSource() {
-//		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-//		CorsConfiguration config = new CorsConfiguration();
-//		config.setAllowCredentials(true);
-//		config.addAllowedOrigin("https://naver-mock-app.herokuapp.com/");
-//		config.addAllowedHeader("*");
-//		config.addAllowedMethod("*");
-////		source.registerCorsConfiguration("/**", config);
-//		CorsConfigurationSource sss = new CorsConfigurationSource(config);
-//		return config;
-////		FilterRegistrationBean bean = new FilterRegistrationBean(new CorsFilter(source.getCorsConfiguration(exchange)));
-////		bean.setOrder(0);
-////		return bean;
-//	}
 	private final String frontEndDomain = "https://naver-mock-app.herokuapp.com";
 //	 @Bean
 //	    public WebMvcConfigurer corsConfigurer() {
@@ -89,7 +73,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements C
 	
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-    	
+
         http.cors().and().csrf().disable()
         		.authorizeRequests()
 //                .antMatchers(HttpMethod.POST, "/login").permitAll() 
@@ -109,14 +93,25 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements C
 
     }
 
-	@Override
-	public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
-		CorsConfiguration config = new CorsConfiguration();
-		config.setAllowCredentials(true);
-		config.addAllowedOrigin("https://naver-mock-app.herokuapp.com");
-		config.addAllowedHeader("*");
-		config.addAllowedMethod("*");
-		return config;
-	}
+    @Bean
+    CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(Arrays.asList(frontEndDomain));
+        configuration.setAllowedMethods(Arrays.asList("GET","POST","DELETE"));
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return (CorsConfigurationSource) source;
+    }
+
+
+//	@Override
+//	public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
+//		CorsConfiguration config = new CorsConfiguration();
+//		config.setAllowCredentials(true);
+//		config.addAllowedOrigin("https://naver-mock-app.herokuapp.com");
+//		config.addAllowedHeader("*");
+//		config.addAllowedMethod("*");
+//		return config;
+//	}
 
 }
