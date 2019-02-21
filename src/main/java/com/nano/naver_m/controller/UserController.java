@@ -41,7 +41,7 @@ import com.nano.naver_m.services.SignInService;
 import com.nano.naver_m.services.SignUpService;
 import com.nano.naver_m.services.TokenAuthenticationService;
 @RestController
-@CrossOrigin(origins = "https://naver-mock-app.herokuapp.com")
+//@CrossOrigin(origins = "https://naver-mock-app.herokuapp.com")
 public class UserController {
 	private final UserRepository repository;
 	private final UserResourceAssembler assembler;
@@ -118,7 +118,7 @@ public class UserController {
 					.created(new URI(resource.getId().expand().getHref()))
 					.body(resource);
 		}else {
-			return ResponseEntity.status(403).build();
+			return ResponseEntity.status(status).build();
 		}
 		
 	}
