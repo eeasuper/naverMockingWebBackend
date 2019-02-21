@@ -118,12 +118,12 @@ public class UserController {
 					.created(new URI(resource.getId().expand().getHref()))
 					.body(resource);
 		}else {
-			return ResponseEntity.status(status).build();
+			return ResponseEntity.status(403).build();
 		}
 		
 	}
 	
-//	@CrossOrigin(origins = "http://localhost:3000")
+
 	@RequestMapping(method = RequestMethod.GET, value = "/users/{username}", produces = {MediaType.APPLICATION_JSON_VALUE})
 	public Set<Boolean> checkValidUsername(@PathVariable String username) {
 		User user = repository.findByUsername(username).orElseThrow(() -> new UserNotFoundException((long) 1));;
