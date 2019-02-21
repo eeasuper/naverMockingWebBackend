@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component;
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class testFilter implements Filter {
-
+	private final String frontEndDomain = "https://naver-mock-app.herokuapp.com/";
 //
 //
 @Override
@@ -27,7 +27,7 @@ public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
     HttpServletRequest request = (HttpServletRequest) req;
     HttpServletResponse response = (HttpServletResponse) res;
 
-    response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
+    response.setHeader("Access-Control-Allow-Origin", frontEndDomain);
     response.setHeader("Access-Control-Allow-Credentials", "true");
     response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");
     response.setHeader("Access-Control-Max-Age", "3600");

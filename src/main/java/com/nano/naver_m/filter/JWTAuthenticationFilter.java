@@ -20,6 +20,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.GenericFilterBean;
 
+import com.nano.naver_m.exceptions.UserNotFoundException;
 import com.nano.naver_m.models.User;
 import com.nano.naver_m.repository.UserRepository;
 import com.nano.naver_m.services.TokenAuthenticationService;
@@ -28,6 +29,11 @@ import com.nano.naver_m.services.TokenAuthenticationService;
 //@Order(Ordered.HIGHEST_PRECEDENCE)
 public class JWTAuthenticationFilter extends GenericFilterBean {
    
+	private final UserRepository repository;
+	
+	public JWTAuthenticationFilter(UserRepository repository){
+		this.repository = repository;
+	}
 	
    @Override
    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
@@ -38,7 +44,10 @@ public class JWTAuthenticationFilter extends GenericFilterBean {
        Authentication authentication = TokenAuthenticationService
                .getAuthentication((HttpServletRequest) servletRequest);
        //authentication here is a 'hollow' usernamepasswordtoken with just the username set as authentication.
-       SecurityContextHolder.getContext().setAuthentication(authentication);
+       User user = repository.findByUsername(authentication.getName()).orElseThrow(() -> new UserNotFoundException((long) 1));;
+       if(user != null) {
+    	   SecurityContextHolder.getContext().setAuthentication(authentication);
+       }
         
        filterChain.doFilter(servletRequest, servletResponse);
    }

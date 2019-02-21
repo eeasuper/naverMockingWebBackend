@@ -14,6 +14,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import com.nano.naver_m.exceptions.UserNotFoundException;
 import com.nano.naver_m.models.User;
 import com.nano.naver_m.repository.UserRepository;
 
@@ -31,7 +32,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider{
 	@Override
 	public Authentication authenticate(Authentication authentication) throws AuthenticationException {
 		System.out.println("CustomAuthenticationProvider authenticate()");
-		User user = repository.findByUsername(authentication.getName());
+		User user = repository.findByUsername(authentication.getName()).orElseThrow(() -> new UserNotFoundException((long) 1));;
 		boolean authenticated = user != null ? true : false;  
 		boolean matches = this.passwordEncoder.matches((String) authentication.getCredentials(), user.getPassword());
 		if(!matches || user == null) {

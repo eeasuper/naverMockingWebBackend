@@ -18,6 +18,7 @@ public class NaverMockBackendApplication {
 	
 	public static void main(String[] args) {
 		SpringApplication.run(NaverMockBackendApplication.class, args);
+		
 	}
 	@Autowired(required = true)
 	public void configureJackson(ObjectMapper jackson2ObjectMapper) {

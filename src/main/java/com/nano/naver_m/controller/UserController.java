@@ -105,12 +105,10 @@ public class UserController {
 		      stayLoggedIn: this.state.stayLoggedIn
 		    }
 		 */
-		
-		String jwtHeader = req.getHeader("Authorization");
-		logger.info("header: "+ jwtHeader);
+
 		logger.info("user:"+newUser.getUsername()+" "+ newUser.getPassword());
-//		User user = signinService.signIn(newUser.getUsername(), newUser.getPassword(), jwtHeader, res);
-		User user = repository.findByUsername(newUser.getUsername());//This line is for Test
+		User user = signinService.signIn(newUser.getUsername(), newUser.getPassword(), res);
+//		User user = repository.findByUsername(newUser.getUsername()).orElseThrow(() -> new UserNotFoundException(id));;//This line is for Test
 
 		Resource<User> resource = assembler.toResource(user);
 		int status = res.getStatus();
@@ -128,7 +126,7 @@ public class UserController {
 //	@CrossOrigin(origins = "http://localhost:3000")
 	@RequestMapping(method = RequestMethod.GET, value = "/users/{username}", produces = {MediaType.APPLICATION_JSON_VALUE})
 	public Set<Boolean> checkValidUsername(@PathVariable String username) {
-		User user = repository.findByUsername(username);
+		User user = repository.findByUsername(username).orElseThrow(() -> new UserNotFoundException((long) 1));;
 		boolean isValid = false;
 		if(user != null) {
 			isValid = false;
