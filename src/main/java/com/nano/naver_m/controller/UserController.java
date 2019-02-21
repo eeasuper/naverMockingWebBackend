@@ -30,7 +30,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RestController;import org.springframework.web.cors.CorsConfiguration;
 
 import com.nano.naver_m.assemblers.UserResource;
 import com.nano.naver_m.assemblers.UserResourceAssembler;
@@ -41,7 +41,7 @@ import com.nano.naver_m.services.SignInService;
 import com.nano.naver_m.services.SignUpService;
 import com.nano.naver_m.services.TokenAuthenticationService;
 @RestController
-//@CrossOrigin
+@CrossOrigin(origins = "https://naver-mock-app.herokuapp.com/")
 public class UserController {
 	private final UserRepository repository;
 	private final UserResourceAssembler assembler;

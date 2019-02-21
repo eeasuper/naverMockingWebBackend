@@ -18,6 +18,8 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.nano.naver_m.filter.JWTAuthenticationFilter;
 
@@ -64,6 +66,27 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements C
 ////		bean.setOrder(0);
 ////		return bean;
 //	}
+	private final String frontEndDomain = "https://naver-mock-app.herokuapp.com/";
+	 @Bean
+	    public WebMvcConfigurer corsConfigurer() {
+	        return new WebMvcConfigurer() {
+	            @Override
+	            public void addCorsMappings(CorsRegistry registry) {
+	                registry.addMapping("/users/*/cart/**").allowedOrigins(frontEndDomain)
+	            		.allowedMethods("DELETE", "POST", "GET");
+	                registry.addMapping("/register").allowedOrigins(frontEndDomain)
+	                	.allowedMethods("POST");
+	                registry.addMapping("/login").allowedOrigins(frontEndDomain)
+	            		.allowedMethods("POST");
+	                registry.addMapping("/api/users/**").allowedOrigins(frontEndDomain)
+	            		.allowedMethods("POST", "GET", "PUT", "DELETE");
+	                registry.addMapping("/users/*").allowedOrigins(frontEndDomain)
+	            		.allowedMethods("GET");
+	                registry.addMapping("/api/products/**").allowedOrigins(frontEndDomain)
+	            		.allowedMethods("GET");
+	            }
+	        };
+	}
 	
     @Override
     protected void configure(HttpSecurity http) throws Exception {
