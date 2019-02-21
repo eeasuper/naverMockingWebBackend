@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component;
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class testFilter implements Filter {
-	private final String frontEndDomain = "https://naver-mock-app.herokuapp.com/";
+	private final String frontEndDomain = "https://naver-mock-app.herokuapp.com";
 //
 //
 @Override

@@ -66,7 +66,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements C
 ////		bean.setOrder(0);
 ////		return bean;
 //	}
-	private final String frontEndDomain = "https://naver-mock-app.herokuapp.com/";
+	private final String frontEndDomain = "https://naver-mock-app.herokuapp.com";
 	 @Bean
 	    public WebMvcConfigurer corsConfigurer() {
 	        return new WebMvcConfigurer() {
