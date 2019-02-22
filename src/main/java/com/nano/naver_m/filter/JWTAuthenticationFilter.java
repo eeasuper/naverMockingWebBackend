@@ -3,19 +3,13 @@ package com.nano.naver_m.filter;
 import java.io.IOException;
 
 import javax.servlet.FilterChain;
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
-import javax.servlet.ServletRequestWrapper;
 import javax.servlet.ServletResponse;
-import javax.servlet.ServletResponseWrapper;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.Ordered;
-import org.springframework.core.annotation.Order;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -42,6 +36,9 @@ public class JWTAuthenticationFilter extends GenericFilterBean {
        HttpServletRequest req = (HttpServletRequest) servletRequest;
        String uri = req.getRequestURI().toString();
        System.out.println(uri);
+       HttpServletResponse res = (HttpServletResponse) servletResponse;
+       res.setStatus(403);
+       ServletResponse newRes = (ServletResponse) res;
        if(!uri.startsWith("/login") && !uri.startsWith("/register")) {
 	       Authentication authentication = TokenAuthenticationService
 	               .getAuthentication((HttpServletRequest) servletRequest);
@@ -53,6 +50,6 @@ public class JWTAuthenticationFilter extends GenericFilterBean {
 	    	   SecurityContextHolder.getContext().setAuthentication(authentication);
 	       }
        }
-       filterChain.doFilter(servletRequest, servletResponse);
+       filterChain.doFilter(servletRequest, newRes);
    }
 }
