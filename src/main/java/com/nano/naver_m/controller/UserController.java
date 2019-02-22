@@ -106,21 +106,21 @@ public class UserController {
 		    }
 		 */
 
-		logger.info("user:"+newUser.getUsername()+" "+ newUser.getPassword());
-		User user = signinService.signIn(newUser.getUsername(), newUser.getPassword(), res);
-//		User user = repository.findByUsername(newUser.getUsername()).orElseThrow(() -> new UserNotFoundException(id));;//This line is for Test
-
-		Resource<User> resource = assembler.toResource(user);
-		int status = res.getStatus();
-		logger.info("processing...login status: " + status);
-		if(status == 201 || status == 200) {
-			return ResponseEntity
-					.created(new URI(resource.getId().expand().getHref()))
-					.body(resource);
-		}else {
-			return ResponseEntity.status(status).build();
-		}
-		
+//		logger.info("user:"+newUser.getUsername()+" "+ newUser.getPassword());
+//		User user = signinService.signIn(newUser.getUsername(), newUser.getPassword(), res);
+////		User user = repository.findByUsername(newUser.getUsername()).orElseThrow(() -> new UserNotFoundException(id));;//This line is for Test
+//
+//		Resource<User> resource = assembler.toResource(user);
+//		int status = res.getStatus();
+//		logger.info("processing...login status: " + status);
+//		if(status == 201 || status == 200) {
+//			return ResponseEntity
+//					.created(new URI(resource.getId().expand().getHref()))
+//					.body(resource);
+//		}else {
+//			return ResponseEntity.status(status).build();
+//		}
+		return ResponseEntity.status(403).build();
 	}
 	
 
