@@ -35,8 +35,8 @@ public class JWTAuthenticationFilter extends GenericFilterBean {
        System.out.println("JWTAuthenticationFilter.doFilter");
        HttpServletRequest req = (HttpServletRequest) servletRequest;
        String uri = req.getRequestURI().toString();
-//       System.out.println(uri);
-//       HttpServletResponse res = (HttpServletResponse) servletResponse;
+       System.out.println(uri);
+       HttpServletResponse res = (HttpServletResponse) servletResponse;
 //       res.setStatus(403);
 
        if(!uri.startsWith("/login") && !uri.startsWith("/register")) {

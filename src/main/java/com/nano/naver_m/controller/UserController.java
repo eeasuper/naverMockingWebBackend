@@ -89,6 +89,9 @@ public class UserController {
 				.body(resource);
 	}
 	
+	//maybe create a mapping for /error next time?
+	
+	
 	@RequestMapping(method = RequestMethod.POST, value = "/login", produces = {MediaType.APPLICATION_JSON_VALUE})
 	//for some Reason, @RequestBody doesn't work, so I used @Validated.
 	ResponseEntity<?> signIn(@RequestBody User newUser, HttpServletRequest req,  HttpServletResponse res) throws URISyntaxException{

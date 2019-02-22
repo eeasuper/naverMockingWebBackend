@@ -5,9 +5,6 @@ package com.nano.naver_m.configurations;
 
 import java.util.Arrays;
 
-import javax.servlet.http.HttpServletRequest;
-
-import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -17,10 +14,10 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.web.access.channel.ChannelProcessingFilter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.filter.CorsFilter;
 
 import com.nano.naver_m.filter.JWTAuthenticationFilter;
 //import com.nano.naver_m.filter.testFilter;
@@ -77,10 +74,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 //.csrf().disable()
-        http.cors().and()
+        http.cors().and().csrf().disable()
         		.authorizeRequests()
                 .antMatchers(HttpMethod.POST, "/login").permitAll() 
-                .antMatchers(HttpMethod.GET, "/login").permitAll() // For Test on Browser
+//                .antMatchers(HttpMethod.GET, "/login").permitAll() // For Test on Browser
                 .antMatchers(HttpMethod.POST, "/register").permitAll()
 //                .antMatchers("/users/**").permitAll() //For Test
 //                .antMatchers("/api/**").permitAll() //For Test
