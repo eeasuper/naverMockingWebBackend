@@ -24,6 +24,7 @@ import org.springframework.web.filter.CorsFilter;
 
 import com.nano.naver_m.filter.JWTAuthenticationFilter;
 //import com.nano.naver_m.filter.testFilter;
+import com.nano.naver_m.filter.testFilter;
 
 
 
@@ -88,7 +89,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 
                 .and().headers().frameOptions().disable()
                 .and()
-//                .addFilterBefore(new testFilter(), ChannelProcessingFilter.class)
+                .addFilterBefore(new testFilter(), ChannelProcessingFilter.class)
         		//The filter below should only be uncommented when /login should be mapped to JWTLoginFilter.
 //                .addFilterBefore(new JWTLoginFilter("/login", authenticationManager()),
 //                        UsernamePasswordAuthenticationFilter.class) // this line is commented out for reasons written in the JWTLoginFilter.class

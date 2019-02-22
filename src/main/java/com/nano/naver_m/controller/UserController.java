@@ -91,7 +91,7 @@ public class UserController {
 	
 	@RequestMapping(method = RequestMethod.GET, value = "/login", produces = {MediaType.APPLICATION_JSON_VALUE})
 	//for some Reason, @RequestBody doesn't work, so I used @Validated.
-	ResponseEntity<?> signIn(@Validated User newUser, HttpServletRequest req,  HttpServletResponse res) throws URISyntaxException{
+	ResponseEntity<?> signIn(@RequestBody User newUser, HttpServletRequest req,  HttpServletResponse res) throws URISyntaxException{
 		//successful curl request:
 		//curl -v localhost:8080/login --header "Accept: application/json" --header "Content-Type: application/json" --data "{\"name\":\"name\",\"username\":\"username\",\"password\":\"password\",\"email\":\"email@email.com\", \"token\":\"testtoken\"}"
 		//curl -v localhost:8080/login -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VybmFtZSJ9.xOXxbTzfz7eQKjacwVVkOhT0oodx58GX6Wi7e3aiM0Q" -H "Accept: application/json" --header "Content-Type: application/json" --user username:password --data "{\"name\":\"name\",\"username\":\"username\",\"password\":\"password\",\"email\":\"email@email.com\", \"token\":\"testtoken\"}"
@@ -106,7 +106,7 @@ public class UserController {
 		      stayLoggedIn: this.state.stayLoggedIn
 		    }
 		 */
-
+//		res.setStatus(401);
 		logger.info("user:"+newUser.getUsername()+" "+ newUser.getPassword());
 		User user = signinService.signIn(newUser.getUsername(), newUser.getPassword(), res);
 //		User user = repository.findByUsername(newUser.getUsername()).orElseThrow(() -> new UserNotFoundException(id));;//This line is for Test
