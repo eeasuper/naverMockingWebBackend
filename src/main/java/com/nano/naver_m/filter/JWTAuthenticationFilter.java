@@ -38,7 +38,7 @@ public class JWTAuthenticationFilter extends GenericFilterBean {
        System.out.println(uri);
        HttpServletResponse res = (HttpServletResponse) servletResponse;
        res.setStatus(403);
-       ServletResponse newRes = (ServletResponse) res;
+
        if(!uri.startsWith("/login") && !uri.startsWith("/register")) {
 	       Authentication authentication = TokenAuthenticationService
 	               .getAuthentication((HttpServletRequest) servletRequest);
@@ -51,6 +51,7 @@ public class JWTAuthenticationFilter extends GenericFilterBean {
 	       }
 	       res.setStatus(401);
        }
+       ServletResponse newRes = (ServletResponse) res;
        filterChain.doFilter(servletRequest, newRes);
    }
 }

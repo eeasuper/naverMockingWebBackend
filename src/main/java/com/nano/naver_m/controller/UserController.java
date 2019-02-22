@@ -90,6 +90,7 @@ public class UserController {
 	}
 	
 	@RequestMapping(method = RequestMethod.GET, value = "/login", produces = {MediaType.APPLICATION_JSON_VALUE})
+	//for some Reason, @RequestBody doesn't work, so I used @Validated.
 	ResponseEntity<?> signIn(@Validated User newUser, HttpServletRequest req,  HttpServletResponse res) throws URISyntaxException{
 		//successful curl request:
 		//curl -v localhost:8080/login --header "Accept: application/json" --header "Content-Type: application/json" --data "{\"name\":\"name\",\"username\":\"username\",\"password\":\"password\",\"email\":\"email@email.com\", \"token\":\"testtoken\"}"
