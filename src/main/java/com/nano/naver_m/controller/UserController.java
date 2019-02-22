@@ -21,6 +21,7 @@ import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.Resources;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -41,7 +42,6 @@ import com.nano.naver_m.services.SignInService;
 import com.nano.naver_m.services.SignUpService;
 import com.nano.naver_m.services.TokenAuthenticationService;
 @RestController
-//@CrossOrigin(origins = "https://naver-mock-app.herokuapp.com")
 public class UserController {
 	private final UserRepository repository;
 	private final UserResourceAssembler assembler;
@@ -90,7 +90,7 @@ public class UserController {
 	}
 	
 	@RequestMapping(method = RequestMethod.GET, value = "/login", produces = {MediaType.APPLICATION_JSON_VALUE})
-	ResponseEntity<?> signIn(@RequestBody User newUser, HttpServletRequest req,  HttpServletResponse res) throws URISyntaxException{
+	ResponseEntity<?> signIn(@Validated User newUser, HttpServletRequest req,  HttpServletResponse res) throws URISyntaxException{
 		//successful curl request:
 		//curl -v localhost:8080/login --header "Accept: application/json" --header "Content-Type: application/json" --data "{\"name\":\"name\",\"username\":\"username\",\"password\":\"password\",\"email\":\"email@email.com\", \"token\":\"testtoken\"}"
 		//curl -v localhost:8080/login -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VybmFtZSJ9.xOXxbTzfz7eQKjacwVVkOhT0oodx58GX6Wi7e3aiM0Q" -H "Accept: application/json" --header "Content-Type: application/json" --user username:password --data "{\"name\":\"name\",\"username\":\"username\",\"password\":\"password\",\"email\":\"email@email.com\", \"token\":\"testtoken\"}"

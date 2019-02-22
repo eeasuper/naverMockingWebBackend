@@ -49,6 +49,7 @@ public class JWTAuthenticationFilter extends GenericFilterBean {
 	       if(user != null) {
 	    	   SecurityContextHolder.getContext().setAuthentication(authentication);
 	       }
+	       res.setStatus(401);
        }
        filterChain.doFilter(servletRequest, newRes);
    }
