@@ -67,6 +67,7 @@ public class UserController {
 				
 	}
 	
+	//In a full app, you would validate username and password in BOTH front-end and back-end. However, I skip validation in backend.
 	@RequestMapping(method = RequestMethod.POST, value = "/register", produces = {MediaType.APPLICATION_JSON_VALUE})
 	ResponseEntity<?> newUser(@RequestBody User newUser, HttpServletResponse res) throws URISyntaxException {
 		//successful curl request:
@@ -81,7 +82,6 @@ public class UserController {
 		    }
 		 */
 		User user = signupService.signup(res, newUser);
-		
 		
 		Resource<User> resource = assembler.toResource(user);
 		return ResponseEntity
@@ -125,18 +125,13 @@ public class UserController {
 
 	}
 	
-
 	@RequestMapping(method = RequestMethod.POST, value = "/users/validate", produces = {MediaType.APPLICATION_JSON_VALUE})
 	public Set<Boolean> checkValidUsername(HttpServletRequest req, HttpServletResponse res) {
-		System.out.println("going through controller");
+		//curl to test with:
+		//curl -v -X POST localhost:8080/users/validate --header "Content-Type: application/x-www-form-urlencoded" -d "username=username"
 		String username = req.getParameter("username");
-		User user = repository.findByUsername(username).orElseThrow(() -> new UserNotFoundException((long) 1));;
-		boolean isValid = false;
-		if(user != null) {
-			isValid = false;
-		}else if(user == null) {
-			isValid = true;
-		}
+		boolean isValid = repository.existsByUsername(username);
+		
 		Set<Boolean> response = Collections.singleton(isValid);
 		System.out.println("setting checkValidUsername" + isValid);
 		return response;
