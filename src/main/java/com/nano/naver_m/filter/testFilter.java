@@ -19,11 +19,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 
-@Component
-@Order(Ordered.HIGHEST_PRECEDENCE)
+//@Component
+//@Order(Ordered.HIGHEST_PRECEDENCE)
 public class testFilter implements Filter {
 	private final String frontEndDomain = "https://naver-mock-app.herokuapp.com";
-
 
 @Override
 public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException {
@@ -37,17 +36,17 @@ public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
     response.setHeader("Access-Control-Max-Age", "3600");
 //    response.setHeader("Access-Control-Allow-Headers", "Content-Type, Origin, Authorization");
     response.setHeader("Access-Control-Allow-Headers", "Content-Type, Origin, Authorization, X-Requested-With,Access-Control-Request-Method,Access-Control-Request-Headers");
-    
+    System.out.println("going through testFilter: " + response.getStatus());
 	
     chain.doFilter(req, res);
 }
-//
-//@Override
-//public void init(FilterConfig filterConfig) {
-//}
-//
-//@Override
-//public void destroy() {
-//}
-//
+
+@Override
+public void init(FilterConfig filterConfig) {
+}
+
+@Override
+public void destroy() {
+}
+
 }

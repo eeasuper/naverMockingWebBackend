@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.Filter;
 import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -14,21 +16,20 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Component;
-import org.springframework.web.filter.GenericFilterBean;
 
 import com.nano.naver_m.exceptions.UserNotFoundException;
 import com.nano.naver_m.models.User;
 import com.nano.naver_m.repository.UserRepository;
 import com.nano.naver_m.services.TokenAuthenticationService;
 
-@Component
+//@Component
 //@Order(Ordered.HIGHEST_PRECEDENCE)
-public class JWTAuthenticationFilter extends GenericFilterBean {
+public class JWTAuthenticationFilter implements Filter {
    
 	@Autowired
 	private UserRepository repository;
 
+	@SuppressWarnings("serial")
 	private static final List<String> urlsNotRequiringAuth = new ArrayList<String>() {{
 		add("/login");
 		add("/register");
@@ -36,7 +37,7 @@ public class JWTAuthenticationFilter extends GenericFilterBean {
 	}};
 	
 	
-	private static boolean checkAuthIsRequired(String uri) {
+	private static boolean checkAuthIsNotRequired(String uri) {
 		return urlsNotRequiringAuth.stream().anyMatch(uri::equals);
 	}
 	
@@ -50,8 +51,8 @@ public class JWTAuthenticationFilter extends GenericFilterBean {
        System.out.println(uri);
        HttpServletResponse res = (HttpServletResponse) servletResponse;
 //       res.setStatus(401);
-       
-       if(!checkAuthIsRequired(uri)) {
+       if(!checkAuthIsNotRequired(uri)) {
+    	   System.out.println("going through auth");
     	   res.setStatus(403);
 	       Authentication authentication = TokenAuthenticationService
 	               .getAuthentication((HttpServletRequest) servletRequest);
@@ -63,8 +64,17 @@ public class JWTAuthenticationFilter extends GenericFilterBean {
 	    	   SecurityContextHolder.getContext().setAuthentication(authentication);
 	       }
        }
-       ServletResponse newRes = (ServletResponse) res;
-       filterChain.doFilter(servletRequest, newRes);
-//       filterChain.doFilter(servletRequest, servletResponse);
+       System.out.println(res.getStatus());
+//       ServletResponse newRes = (ServletResponse) res;
+//       filterChain.doFilter(servletRequest, newRes);
+       filterChain.doFilter(servletRequest, servletResponse);
+   }
+   
+   @Override
+   public void init(FilterConfig filterConfig) {
+   }
+
+   @Override
+   public void destroy() {
    }
 }

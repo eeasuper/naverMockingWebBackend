@@ -128,9 +128,9 @@ public class UserController {
 
 	@RequestMapping(method = RequestMethod.POST, value = "/users/validate", produces = {MediaType.APPLICATION_JSON_VALUE})
 	public Set<Boolean> checkValidUsername(HttpServletRequest req, HttpServletResponse res) {
+		System.out.println("going through controller");
 		String username = req.getParameter("username");
 		User user = repository.findByUsername(username).orElseThrow(() -> new UserNotFoundException((long) 1));;
-		res.setStatus(403);
 		boolean isValid = false;
 		if(user != null) {
 			isValid = false;
@@ -138,6 +138,7 @@ public class UserController {
 			isValid = true;
 		}
 		Set<Boolean> response = Collections.singleton(isValid);
+		System.out.println("setting checkValidUsername" + isValid);
 		return response;
 	}
 	
