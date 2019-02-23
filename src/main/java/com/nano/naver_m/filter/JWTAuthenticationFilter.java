@@ -53,7 +53,6 @@ public class JWTAuthenticationFilter implements Filter {
 //       res.setStatus(401);
        if(!checkAuthIsNotRequired(uri)) {
     	   System.out.println("going through auth");
-    	   res.setStatus(403);
 	       Authentication authentication = TokenAuthenticationService
 	               .getAuthentication((HttpServletRequest) servletRequest);
 	       //authentication here is a 'hollow' usernamepasswordtoken with just the username set as authentication.

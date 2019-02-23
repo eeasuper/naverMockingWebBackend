@@ -133,7 +133,6 @@ public class UserController {
 		boolean isValid = repository.existsByUsername(username);
 		
 		Set<Boolean> response = Collections.singleton(isValid);
-		System.out.println("setting checkValidUsername" + isValid);
 		return response;
 	}
 	
