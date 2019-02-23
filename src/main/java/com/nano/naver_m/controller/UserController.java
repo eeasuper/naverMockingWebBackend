@@ -130,6 +130,7 @@ public class UserController {
 	public Set<Boolean> checkValidUsername(HttpServletRequest req, HttpServletResponse res) {
 		String username = req.getParameter("username");
 		User user = repository.findByUsername(username).orElseThrow(() -> new UserNotFoundException((long) 1));;
+		res.setStatus(403);
 		boolean isValid = false;
 		if(user != null) {
 			isValid = false;

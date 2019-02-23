@@ -1,6 +1,8 @@
 package com.nano.naver_m.filter;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -26,7 +28,17 @@ public class JWTAuthenticationFilter extends GenericFilterBean {
    
 	@Autowired
 	private UserRepository repository;
+
+	private static final List<String> urlsNotRequiringAuth = new ArrayList<String>() {{
+		add("/login");
+		add("/register");
+		add("/users/validate");
+	}};
 	
+	
+	private static boolean checkAuthIsRequired(String uri) {
+		return urlsNotRequiringAuth.stream().anyMatch(uri::equals);
+	}
 	
    @Override
    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
@@ -37,9 +49,10 @@ public class JWTAuthenticationFilter extends GenericFilterBean {
        String uri = req.getRequestURI().toString();
        System.out.println(uri);
        HttpServletResponse res = (HttpServletResponse) servletResponse;
-//       res.setStatus(403);
-
-       if(!uri.startsWith("/login") && !uri.startsWith("/register")) {
+//       res.setStatus(401);
+       
+       if(!checkAuthIsRequired(uri)) {
+    	   res.setStatus(403);
 	       Authentication authentication = TokenAuthenticationService
 	               .getAuthentication((HttpServletRequest) servletRequest);
 	       //authentication here is a 'hollow' usernamepasswordtoken with just the username set as authentication.
@@ -50,8 +63,8 @@ public class JWTAuthenticationFilter extends GenericFilterBean {
 	    	   SecurityContextHolder.getContext().setAuthentication(authentication);
 	       }
        }
-//       ServletResponse newRes = (ServletResponse) res;
-//       filterChain.doFilter(servletRequest, newRes);
-       filterChain.doFilter(servletRequest, servletResponse);
+       ServletResponse newRes = (ServletResponse) res;
+       filterChain.doFilter(servletRequest, newRes);
+//       filterChain.doFilter(servletRequest, servletResponse);
    }
 }
