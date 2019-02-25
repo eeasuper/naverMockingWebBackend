@@ -20,6 +20,7 @@ import com.nano.naver_m.exceptions.UserNotFoundException;
 import com.nano.naver_m.models.User;
 import com.nano.naver_m.repository.UserRepository;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
@@ -62,7 +63,11 @@ public class SignInService {
 			Authentication authentication = new UsernamePasswordAuthenticationToken(username, password, new ArrayList<>());
 			authentication.isAuthenticated();
 			SecurityContextHolder.getContext().setAuthentication(authentication);
+			
+	    	Claims userClaim = Jwts.claims();
+	    	userClaim.put("usr_id", user.getId());
 	        String JWT = Jwts.builder().setSubject(username)
+	        		.setClaims(userClaim)
 	                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATIONTIME))
 	                .signWith(SignatureAlgorithm.HS512, SECRET).compact();
 			user.setToken(JWT);

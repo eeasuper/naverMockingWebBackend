@@ -22,6 +22,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import com.nano.naver_m.filter.JWTAuthenticationFilter;
 //import com.nano.naver_m.filter.testFilter;
 import com.nano.naver_m.filter.testFilter;
+import com.nano.naver_m.repository.UserRepository;
 
 
 
@@ -33,6 +34,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 //	@Autowired
 //	private CustomAuthenticationProvider authenticationProvider;
 
+	public UserRepository repository;
+	WebSecurityConfig(UserRepository repository){
+		this.repository = repository;
+	}
 	
 //	@Autowired JWTLoginFilter loginFilter;
 	
@@ -92,7 +97,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
         		//The filter below should only be uncommented when /login should be mapped to JWTLoginFilter.
 //                .addFilterBefore(new JWTLoginFilter("/login", authenticationManager()),
 //                        UsernamePasswordAuthenticationFilter.class) // this line is commented out for reasons written in the JWTLoginFilter.class
-                .addFilterBefore(new JWTAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(new JWTAuthenticationFilter(repository), UsernamePasswordAuthenticationFilter.class);
 
     }
 

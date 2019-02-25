@@ -26,9 +26,13 @@ import com.nano.naver_m.services.TokenAuthenticationService;
 //@Order(Ordered.HIGHEST_PRECEDENCE)
 public class JWTAuthenticationFilter implements Filter {
    
-	@Autowired
+//	@Autowired
 	private UserRepository repository;
-
+	
+	public JWTAuthenticationFilter(UserRepository repository){
+		this.repository = repository;
+	}
+	
 	@SuppressWarnings("serial")
 	private static final List<String> urlsNotRequiringAuth = new ArrayList<String>() {{
 		add("/login");
@@ -50,24 +54,25 @@ public class JWTAuthenticationFilter implements Filter {
        String uri = req.getRequestURI().toString();
        System.out.println(uri);
        HttpServletResponse res = (HttpServletResponse) servletResponse;
-       res.setStatus(401);
+//       res.setStatus(401);
        if(!checkAuthIsNotRequired(uri)) {
-    	   res.setStatus(404);
+//    	   res.setStatus(404);
     	   System.out.println("going through auth");
 	       Authentication authentication = TokenAuthenticationService
 	               .getAuthentication((HttpServletRequest) servletRequest);
 	       //authentication here is a 'hollow' usernamepasswordtoken with just the username set as authentication.
 	       System.out.println("JWTAuthenticationFilter.doFilter repository search");
-	       User user = repository.findByUsername(authentication.getName()).orElseThrow(() -> new UserNotFoundException((long) 1));;
+	       boolean exists = repository.existsByUsername(authentication.getName());
+	       System.out.println(exists);
 	       System.out.println("JWTAuthenticationFilter.doFilter repository serach finished");
-	       if(user != null) {
+	       if(exists) {
 	    	   SecurityContextHolder.getContext().setAuthentication(authentication);
 	       }
        }
        System.out.println(res.getStatus());
-       ServletResponse newRes = (ServletResponse) res;
-       filterChain.doFilter(servletRequest, newRes);
-//       filterChain.doFilter(servletRequest, servletResponse);
+//       ServletResponse newRes = (ServletResponse) res;
+//       filterChain.doFilter(servletRequest, newRes);
+       filterChain.doFilter(servletRequest, servletResponse);
    }
    
    @Override

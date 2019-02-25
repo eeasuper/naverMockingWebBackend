@@ -67,6 +67,7 @@ public class CartController {
 	
 	@RequestMapping(method = RequestMethod.POST, value = "/users/{id}/cart", produces = {MediaType.APPLICATION_JSON_VALUE})
 	public ResponseEntity<OrderDetailsResource>addToCart(@RequestBody OrderDetails newOrder){
+		System.out.println("going through controller");
 		OrderDetails order = repository.save(newOrder);
 		return ResponseEntity
 				//change allFromUser to one() when one() is created...
