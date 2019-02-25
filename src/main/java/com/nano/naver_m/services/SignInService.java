@@ -66,7 +66,8 @@ public class SignInService {
 			
 	    	Claims userClaim = Jwts.claims();
 	    	userClaim.put("usr_id", user.getId());
-	        String JWT = Jwts.builder().setSubject(username)
+	    	userClaim.put("sub", username);
+	        String JWT = Jwts.builder()
 	        		.setClaims(userClaim)
 	                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATIONTIME))
 	                .signWith(SignatureAlgorithm.HS512, SECRET).compact();
