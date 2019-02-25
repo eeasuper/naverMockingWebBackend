@@ -34,8 +34,11 @@ public class LoadDatabase {
 		productRepository.save(new Product("[비디비치](신세계강남점)[2월] 퍼펙트 브이 핏 쿠션 (정품 픽서 증정)",48700));
 		productRepository.save(new Product("[시세이도] 트렌스루센트 프레스드 파우더",46750));
 		productRepository.save(new Product("[시세이도] 맨 클렌징 폼",25500));
-		cartRepository.save(new OrderDetails(user,product,1));
-		cartRepository.save(new OrderDetails(user,product2,1));
+		productRepository.save(new Product("test",25500));
+//		cartRepository.save(new OrderDetails(new User("name","username", encryptedPassword ,"email@email.com"),new Product("[대구백화점 1관] [시에로코스메틱]유니 어 데이",20000),1));
+//		cartRepository.save(new OrderDetails(new User("name","username", encryptedPassword ,"email@email.com"),new Product("[PUPA] 멀티플레이 트리플 퍼포즈 아이펜슬 5종",22000),1));
+		cartRepository.save(new OrderDetails((long) 1,(long)2,1));
+		cartRepository.save(new OrderDetails((long) 1,(long)4,1));
 		return null;
 	}
 }

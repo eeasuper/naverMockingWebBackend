@@ -11,6 +11,7 @@ import com.nano.naver_m.models.User;
 
 
 public interface CartRepository extends JpaRepository<OrderDetails, Long> {
-	public List<OrderDetails> findByUserOrderByIdAsc(User user);
-	public OrderDetails findByUserAndProduct(User user, Product product);
+	public List<OrderDetails> findByUserIdOrderByIdAsc(Long userId);
+//	public OrderDetails findByUserAndProduct(User user, Product product);
+	public Long deleteByUserIdAndProductId(Long userId, Long productId); 
 }
