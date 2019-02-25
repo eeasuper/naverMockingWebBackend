@@ -50,8 +50,9 @@ public class JWTAuthenticationFilter implements Filter {
        String uri = req.getRequestURI().toString();
        System.out.println(uri);
        HttpServletResponse res = (HttpServletResponse) servletResponse;
-//       res.setStatus(401);
+       res.setStatus(401);
        if(!checkAuthIsNotRequired(uri)) {
+    	   res.setStatus(404);
     	   System.out.println("going through auth");
 	       Authentication authentication = TokenAuthenticationService
 	               .getAuthentication((HttpServletRequest) servletRequest);
@@ -64,9 +65,9 @@ public class JWTAuthenticationFilter implements Filter {
 	       }
        }
        System.out.println(res.getStatus());
-//       ServletResponse newRes = (ServletResponse) res;
-//       filterChain.doFilter(servletRequest, newRes);
-       filterChain.doFilter(servletRequest, servletResponse);
+       ServletResponse newRes = (ServletResponse) res;
+       filterChain.doFilter(servletRequest, newRes);
+//       filterChain.doFilter(servletRequest, servletResponse);
    }
    
    @Override

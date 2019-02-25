@@ -16,8 +16,11 @@ public class User {
 	
 	public User(){
 	}
-
 	
+	//Will this constructor work?
+	public User(String username) {
+		this.username = username;
+	}
 
 	public User(String username, String password) {
 		super();
