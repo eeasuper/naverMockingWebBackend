@@ -6,7 +6,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 @Entity
-public class User {
+public class SiteUser {
 	private @Id @GeneratedValue @Column(nullable=false) Long id;
 	private @Column(nullable=false) String  name;
 	private @Column(nullable=false) String username;
@@ -14,25 +14,28 @@ public class User {
 	private @Column(nullable=false) String email;
 	private String token;
 	
-	public User(){
+	public SiteUser(){
+	}
+	
+	//Will this constructor work?
+	public SiteUser(String username) {
+		this.username = username;
 	}
 
-	
-
-	public User(String username, String password) {
+	public SiteUser(String username, String password) {
 		super();
 		this.username = username;
 		this.password = password;
 	}
 	
-	public User(String name, String username, String password, String email) {
+	public SiteUser(String name, String username, String password, String email) {
 		super();
 		this.name = name;
 		this.username = username;
 		this.password = password;
 		this.email = email;
 	}
-	public User(String token, String name, String username, String password, String email) {
+	public SiteUser(String token, String name, String username, String password, String email) {
 		super();
 		this.token = token;
 		this.name = name;

@@ -1,7 +1,7 @@
 package com.nano.naver_m.exceptions;
 
 import com.nano.naver_m.models.Product;
-import com.nano.naver_m.models.User;
+import com.nano.naver_m.models.SiteUser;
 
 public class OrderDetailsNotFoundException extends RuntimeException{
 	public OrderDetailsNotFoundException(Long id) {

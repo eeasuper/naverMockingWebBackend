@@ -9,17 +9,15 @@ import javax.persistence.Id;
 public class Product {
 	private @Id @GeneratedValue @Column(nullable=false) Long id;
 	private @Column(nullable=false) String productName;
-	private @Column(nullable=false) String imagePathInFrontEnd;
 	private @Column(nullable=false) int price;
 	
 	public Product() {
 		
 	}
 	
-	public Product(String productName, String imagePathInFrontEnd,int price) {
+	public Product(String productName, int price) {
 		super();
 		this.productName = productName;
-		this.imagePathInFrontEnd = imagePathInFrontEnd;
 		this.price = price;
 	}
 
@@ -37,14 +35,6 @@ public class Product {
 
 	public void setProductName(String productName) {
 		this.productName = productName;
-	}
-
-	public String getImagePathInFrontEnd() {
-		return imagePathInFrontEnd;
-	}
-
-	public void setImagePathInFrontEnd(String imagePathInFrontEnd) {
-		this.imagePathInFrontEnd = imagePathInFrontEnd;
 	}
 
 	public int getPrice() {

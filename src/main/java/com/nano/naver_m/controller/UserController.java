@@ -21,6 +21,7 @@ import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.Resources;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,18 +31,17 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RestController;import org.springframework.web.cors.CorsConfiguration;
 
 import com.nano.naver_m.assemblers.UserResource;
 import com.nano.naver_m.assemblers.UserResourceAssembler;
 import com.nano.naver_m.exceptions.UserNotFoundException;
-import com.nano.naver_m.models.User;
+import com.nano.naver_m.models.SiteUser;
 import com.nano.naver_m.repository.UserRepository;
 import com.nano.naver_m.services.SignInService;
 import com.nano.naver_m.services.SignUpService;
 import com.nano.naver_m.services.TokenAuthenticationService;
 @RestController
-//@CrossOrigin
 public class UserController {
 	private final UserRepository repository;
 	private final UserResourceAssembler assembler;
@@ -58,8 +58,8 @@ public class UserController {
 	
 	@RequestMapping(method = RequestMethod.GET, value = "/api/users", produces = {MediaType.APPLICATION_JSON_VALUE})
 	public
-	Resources<Resource<User>> all(){
-		List<Resource<User>> user = repository.findAll().stream().map(assembler::toResource)
+	Resources<Resource<SiteUser>> all(){
+		List<Resource<SiteUser>> user = repository.findAll().stream().map(assembler::toResource)
 				.collect(Collectors.toList());
 		
 		return new Resources<>(user,
@@ -67,8 +67,9 @@ public class UserController {
 				
 	}
 	
+	//In a full app, you would validate username and password in BOTH front-end and back-end. However, I skip validation in backend.
 	@RequestMapping(method = RequestMethod.POST, value = "/register", produces = {MediaType.APPLICATION_JSON_VALUE})
-	ResponseEntity<?> newUser(@RequestBody User newUser, HttpServletResponse res) throws URISyntaxException {
+	ResponseEntity<?> newUser(@RequestBody SiteUser newUser, HttpServletResponse res) throws URISyntaxException {
 		//successful curl request:
 		//curl -v localhost:8080/register --header "Accept: application/json" --header "Content-Type: application/json" --data "{\"name\":\"test1\",\"username\":\"testusername1\",\"password\":\"testpassword1\",\"email\":\"testemail1\", \"token\":\"testtoken\"}"
 		//request format:
@@ -80,17 +81,19 @@ public class UserController {
 		      password: password
 		    }
 		 */
-		User user = signupService.signup(res, newUser);
+		SiteUser user = signupService.signup(res, newUser);
 		
-		
-		Resource<User> resource = assembler.toResource(user);
+		Resource<SiteUser> resource = assembler.toResource(user);
 		return ResponseEntity
 				.created(new URI(resource.getId().expand().getHref()))
 				.body(resource);
 	}
 	
-	@RequestMapping(method = RequestMethod.GET, value = "/login", produces = {MediaType.APPLICATION_JSON_VALUE})
-	ResponseEntity<?> signIn(@RequestBody User newUser, HttpServletRequest req,  HttpServletResponse res) throws URISyntaxException{
+	//maybe create a mapping for /error next time?
+	
+	
+	@RequestMapping(method = RequestMethod.POST, value = "/login", produces = {MediaType.APPLICATION_JSON_VALUE})
+	ResponseEntity<?> signIn(@RequestBody SiteUser newUser, HttpServletRequest req,  HttpServletResponse res) throws URISyntaxException{
 		//successful curl request:
 		//curl -v localhost:8080/login --header "Accept: application/json" --header "Content-Type: application/json" --data "{\"name\":\"name\",\"username\":\"username\",\"password\":\"password\",\"email\":\"email@email.com\", \"token\":\"testtoken\"}"
 		//curl -v localhost:8080/login -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VybmFtZSJ9.xOXxbTzfz7eQKjacwVVkOhT0oodx58GX6Wi7e3aiM0Q" -H "Accept: application/json" --header "Content-Type: application/json" --user username:password --data "{\"name\":\"name\",\"username\":\"username\",\"password\":\"password\",\"email\":\"email@email.com\", \"token\":\"testtoken\"}"
@@ -105,14 +108,10 @@ public class UserController {
 		      stayLoggedIn: this.state.stayLoggedIn
 		    }
 		 */
-		
-		String jwtHeader = req.getHeader("Authorization");
-		logger.info("header: "+ jwtHeader);
 		logger.info("user:"+newUser.getUsername()+" "+ newUser.getPassword());
-//		User user = signinService.signIn(newUser.getUsername(), newUser.getPassword(), jwtHeader, res);
-		User user = repository.findByUsername(newUser.getUsername());//This line is for Test
+		SiteUser user = signinService.signIn(newUser.getUsername(), newUser.getPassword(), res);
 
-		Resource<User> resource = assembler.toResource(user);
+		Resource<SiteUser> resource = assembler.toResource(user);
 		int status = res.getStatus();
 		logger.info("processing...login status: " + status);
 		if(status == 201 || status == 200) {
@@ -122,33 +121,30 @@ public class UserController {
 		}else {
 			return ResponseEntity.status(status).build();
 		}
-		
+
 	}
 	
-//	@CrossOrigin(origins = "http://localhost:3000")
-	@RequestMapping(method = RequestMethod.GET, value = "/users/{username}", produces = {MediaType.APPLICATION_JSON_VALUE})
-	public Set<Boolean> checkValidUsername(@PathVariable String username) {
-		User user = repository.findByUsername(username);
-		boolean isValid = false;
-		if(user != null) {
-			isValid = false;
-		}else if(user == null) {
-			isValid = true;
-		}
+	@RequestMapping(method = RequestMethod.POST, value = "/users/validate", produces = {MediaType.APPLICATION_JSON_VALUE})
+	public Set<Boolean> checkValidUsername(HttpServletRequest req, HttpServletResponse res) {
+		//curl to test with:
+		//curl -v -X POST localhost:8080/users/validate --header "Content-Type: application/x-www-form-urlencoded" -d "username=username"
+		String username = req.getParameter("username");
+		boolean isValid = repository.existsByUsername(username);
+		
 		Set<Boolean> response = Collections.singleton(isValid);
 		return response;
 	}
 	
 	@RequestMapping(method = RequestMethod.GET, value = "/api/users/{id}", produces = {MediaType.APPLICATION_JSON_VALUE})
 	public
-	User one(@PathVariable Long id) {
+	SiteUser one(@PathVariable Long id) {
 
 		return repository.findById(id)
 			.orElseThrow(() -> new UserNotFoundException(id));
 	}
 	
 	@RequestMapping(method = RequestMethod.PUT, value = "/api/users/{id}", produces = {MediaType.APPLICATION_JSON_VALUE})
-	User replaceUser(@RequestBody User newUser, @PathVariable Long id) {
+	SiteUser replaceUser(@RequestBody SiteUser newUser, @PathVariable Long id) {
 
 		return repository.findById(id)
 			.map(user -> {

@@ -8,15 +8,15 @@ import org.springframework.stereotype.Component;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.*;
 
 import com.nano.naver_m.controller.UserController;
-import com.nano.naver_m.models.User;
+import com.nano.naver_m.models.SiteUser;
 
 @Component
-public class UserResourceAssembler implements ResourceAssembler<User, Resource<User>> {
+public class UserResourceAssembler implements ResourceAssembler<SiteUser, Resource<SiteUser>> {
 
 
 	@Override
-	public Resource<User> toResource(User user) {
-		Resource<User> resource = new Resource<>(user, 
+	public Resource<SiteUser> toResource(SiteUser user) {
+		Resource<SiteUser> resource = new Resource<>(user, 
 					linkTo(methodOn(UserController.class).one(user.getId())).withSelfRel(),
 					linkTo(methodOn(UserController.class).all()).withRel("api/users"));
 

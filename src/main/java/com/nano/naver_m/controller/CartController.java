@@ -2,6 +2,8 @@ package com.nano.naver_m.controller;
 
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,10 +54,11 @@ public class CartController {
 	//"produces" parameter is important. Without it Spring does not activate jackson and tries to convert resource as XML.
 	@RequestMapping(method = RequestMethod.GET, value = "/users/{id}/cart", produces = {MediaType.APPLICATION_JSON_VALUE})
 	public Resources<Resource<OrderDetails>> allFromUser(@PathVariable Long id){
-		List<OrderDetails> cart = repository.findByUserOrderByIdAsc(userRepository.findById(id)
-				.orElseThrow(() -> new UserNotFoundException(id)));
+//	public ResponseEntity<?> allFromUser(@PathVariable Long id){
+		List<OrderDetails> cart = repository.findByUserIdOrderByIdAsc(id);
 		Resources<Resource<OrderDetails>> resource = assembler.toResources(cart,id);
 		return resource;
+//		return ResponseEntity.status(HttpStatus.ACCEPTED).build();
 	}
 
 	//do one mapping for one product in cart.	
@@ -67,33 +70,26 @@ public class CartController {
 	
 	@RequestMapping(method = RequestMethod.POST, value = "/users/{id}/cart", produces = {MediaType.APPLICATION_JSON_VALUE})
 	public ResponseEntity<OrderDetailsResource>addToCart(@RequestBody OrderDetails newOrder){
+		System.out.println("going through controller");
+		System.out.println(newOrder.getProductId());
 		OrderDetails order = repository.save(newOrder);
+
 		return ResponseEntity
 				//change allFromUser to one() when one() is created...
-				.created(linkTo(methodOn(CartController.class).allFromUser(newOrder.getUser().getId())).toUri())
+				.created(linkTo(methodOn(CartController.class).allFromUser(newOrder.getUserId())).toUri())
 				.body(assembler.toResource(newOrder));
 	}
-	
+
+
 	//if possible create enums and add them to OrderDetails.java to cancel the order and not delete it.
-	boolean deleted;
+	@Transactional 
 	@RequestMapping(method = RequestMethod.DELETE, value = "/users/{id}/cart/{id2}", produces = {MediaType.APPLICATION_JSON_VALUE})
 	public ResponseEntity<OrderDetailsResource> deleteFromCart(@PathVariable("id") Long user_id, @PathVariable("id2") Long product_id){
-		//This code makes 5 SQL queries. This cannot be acceptable in a real project...It would be better if front end gave entities instead of just ids. That would quicken things.
-		OrderDetails order = repository.findByUserAndProduct(userRepository.findById(user_id)
-				.orElseThrow(() -> new UserNotFoundException(user_id)), productRepository.findById(product_id)
-				.orElseThrow(()-> new ProductNotFoundException(product_id)));
-		repository.delete(order);
-		deleted = true;
-		List<OrderDetails> orderList = repository.findByUserOrderByIdAsc(userRepository.findById(user_id)
-				.orElseThrow(() -> new UserNotFoundException(user_id)));
-		orderList.stream().forEach(val -> {
-			if(val.equals(order)) {
-				deleted = false;
-			}
-		});
-		if(deleted) {
+		Long id = repository.deleteByUserIdAndProductId(user_id, product_id);
+		if(id != null) {
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-		}else {
+		}
+		else{
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 			//could actually be a different error, but I'll just go with this.
 		}

@@ -19,7 +19,7 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.stereotype.Component;
 
-import com.nano.naver_m.models.User;
+import com.nano.naver_m.models.SiteUser;
 import com.nano.naver_m.repository.UserRepository;
 import com.nano.naver_m.services.TokenAuthenticationService;
 

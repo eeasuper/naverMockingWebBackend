@@ -7,10 +7,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.nano.naver_m.models.OrderDetails;
 import com.nano.naver_m.models.Product;
-import com.nano.naver_m.models.User;
+import com.nano.naver_m.models.SiteUser;
 
 
 public interface CartRepository extends JpaRepository<OrderDetails, Long> {
-	public List<OrderDetails> findByUserOrderByIdAsc(User user);
-	public OrderDetails findByUserAndProduct(User user, Product product);
+	public List<OrderDetails> findByUserIdOrderByIdAsc(Long userId);
+//	public OrderDetails findByUserAndProduct(User user, Product product);
+	public Long deleteByUserIdAndProductId(Long userId, Long productId); 
 }

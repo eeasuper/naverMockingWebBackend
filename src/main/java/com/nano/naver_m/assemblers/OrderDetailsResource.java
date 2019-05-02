@@ -11,7 +11,7 @@ import org.springframework.hateoas.ResourceSupport;
 
 import com.nano.naver_m.models.OrderDetails;
 import com.nano.naver_m.models.Product;
-import com.nano.naver_m.models.User;
+import com.nano.naver_m.models.SiteUser;
 
 public class OrderDetailsResource extends ResourceSupport{
 	

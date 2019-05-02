@@ -16,9 +16,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import com.nano.naver_m.controller.UserController;
-import com.nano.naver_m.models.User;
+import com.nano.naver_m.exceptions.UserNotFoundException;
+import com.nano.naver_m.models.SiteUser;
 import com.nano.naver_m.repository.UserRepository;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
@@ -40,31 +42,33 @@ public class SignInService {
      
     static final String HEADER_STRING = "Authorization";
     
-	public User signIn(String username, String password, String token,  HttpServletResponse res){
+	public SiteUser signIn(String username, String password, HttpServletResponse res){
 		//https://blog.restcase.com/rest-api-error-codes-101/
-		if(token == null) {
-			throw new BadCredentialsException("1000");
-		}
 		
-		String usernameFromToken = Jwts.parser().setSigningKey(SECRET).parseClaimsJws(token.replace(TOKEN_PREFIX, "")).getBody()
-                .getSubject();
-		User user = repository.findByUsername(usernameFromToken);
+//		String usernameFromToken = Jwts.parser().setSigningKey(SECRET).parseClaimsJws(token.replace(TOKEN_PREFIX, "")).getBody()
+//                .getSubject();
+		SiteUser user = repository.findByUsername(username).orElseThrow(() -> new UserNotFoundException((long) 1));;
 		
-		boolean authenticated = user != null ? true : false;
+		boolean exists = user != null ? true : false;
 		boolean matches = this.passwordEncoder.matches(password, user.getPassword());
 		
-		if(!matches || !authenticated) {
+		if(!matches || !exists) {
 			System.out.println("credentials error");
 			res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 			return user;
 		}
 		
 		//does password inside spring token have to be encoded?
-		if(matches && authenticated) {
-			Authentication authentication = new UsernamePasswordAuthenticationToken(usernameFromToken, password, new ArrayList<>());
+		if(matches && exists) {
+			Authentication authentication = new UsernamePasswordAuthenticationToken(username, password, new ArrayList<>());
 			authentication.isAuthenticated();
 			SecurityContextHolder.getContext().setAuthentication(authentication);
-	        String JWT = Jwts.builder().setSubject(username)
+			
+	    	Claims userClaim = Jwts.claims();
+	    	userClaim.put("usr_id", user.getId());
+	    	userClaim.put("sub", username);
+	        String JWT = Jwts.builder()
+	        		.setClaims(userClaim)
 	                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATIONTIME))
 	                .signWith(SignatureAlgorithm.HS512, SECRET).compact();
 			user.setToken(JWT);

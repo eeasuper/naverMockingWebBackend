@@ -11,7 +11,8 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import com.nano.naver_m.models.User;
+import com.nano.naver_m.exceptions.UserNotFoundException;
+import com.nano.naver_m.models.SiteUser;
 import com.nano.naver_m.repository.UserRepository;
 
 @Component
@@ -28,7 +29,7 @@ public class CustomAuthenticationManager implements AuthenticationManager{
 	    String username = authentication.getPrincipal() + "";
 	    String password = authentication.getCredentials() + "";
 	    
-	    User user = repository.findByUsername(username);
+	    SiteUser user = repository.findByUsername(username).orElseThrow(() -> new UserNotFoundException((long) 1));;
 	    if(user == null) {
 	    	throw new BadCredentialsException("1000");
 	    }

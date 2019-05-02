@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import com.nano.naver_m.models.User;
+import com.nano.naver_m.models.SiteUser;
 import com.nano.naver_m.repository.UserRepository;
 
 @Component
@@ -22,7 +22,7 @@ public class SignUpService {
 		this.repository = repository;
 	}
     
-	public User signup(HttpServletResponse res, User user){
+	public SiteUser signup(HttpServletResponse res, SiteUser user){
 		String encryptedPassword = this.passwordEncoder.encode(user.getPassword());
 		user.setPassword(encryptedPassword);
 		repository.save(user);
