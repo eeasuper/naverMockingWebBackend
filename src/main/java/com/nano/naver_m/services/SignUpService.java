@@ -14,7 +14,8 @@ import com.nano.naver_m.repository.UserRepository;
 public class SignUpService {
 	@Autowired
 	UserRepository repository;
-	
+	@Autowired
+	TokenAuthenticationService tokenService;
 	@Autowired
 	private BCryptPasswordEncoder passwordEncoder;
 	
@@ -26,9 +27,11 @@ public class SignUpService {
 		String encryptedPassword = this.passwordEncoder.encode(user.getPassword());
 		user.setPassword(encryptedPassword);
 		repository.save(user);
+		SiteUser u=tokenService.addToken(user.getUsername(), user.getPassword(), user);
+		u.setPassword(null);
 		//I think there's no need to set password as the encrypted password and send it as response.
-		user.setPassword(null);
-		return user;
+		u.setPassword(null);
+		return u;
 	}
 		
 }

@@ -30,17 +30,11 @@ public class SignInService {
 	
 	@Autowired
 	UserRepository repository;
-	
+	@Autowired
+	TokenAuthenticationService tokenService;
 	@Autowired
 	private BCryptPasswordEncoder passwordEncoder;
-	
-    static final long EXPIRATIONTIME = 864_000_000; // 10 days
-    
-    static final String SECRET = "Fjapsijf0183lFlso0slfs";
-     
-    static final String TOKEN_PREFIX = "Bearer";
-     
-    static final String HEADER_STRING = "Authorization";
+
     
 	public SiteUser signIn(String username, String password, HttpServletResponse res){
 		//https://blog.restcase.com/rest-api-error-codes-101/
@@ -58,20 +52,10 @@ public class SignInService {
 			return user;
 		}
 		
-		//does password inside spring token have to be encoded?
 		if(matches && exists) {
-			Authentication authentication = new UsernamePasswordAuthenticationToken(username, password, new ArrayList<>());
-			authentication.isAuthenticated();
-			SecurityContextHolder.getContext().setAuthentication(authentication);
-			
-	    	Claims userClaim = Jwts.claims();
-	    	userClaim.put("usr_id", user.getId());
-	    	userClaim.put("sub", username);
-	        String JWT = Jwts.builder()
-	        		.setClaims(userClaim)
-	                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATIONTIME))
-	                .signWith(SignatureAlgorithm.HS512, SECRET).compact();
-			user.setToken(JWT);
+			SiteUser u=tokenService.addToken(username, password, user);
+			u.setPassword(null);
+			return u;
 		}
 		user.setPassword(null);
 		return user;

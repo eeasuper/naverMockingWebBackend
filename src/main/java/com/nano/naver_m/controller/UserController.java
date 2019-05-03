@@ -108,12 +108,10 @@ public class UserController {
 		      stayLoggedIn: this.state.stayLoggedIn
 		    }
 		 */
-		logger.info("user:"+newUser.getUsername()+" "+ newUser.getPassword());
 		SiteUser user = signinService.signIn(newUser.getUsername(), newUser.getPassword(), res);
 
 		Resource<SiteUser> resource = assembler.toResource(user);
 		int status = res.getStatus();
-		logger.info("processing...login status: " + status);
 		if(status == 201 || status == 200) {
 			return ResponseEntity
 					.created(new URI(resource.getId().expand().getHref()))

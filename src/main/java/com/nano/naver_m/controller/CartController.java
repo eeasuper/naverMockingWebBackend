@@ -31,6 +31,7 @@ import com.nano.naver_m.models.Product;
 import com.nano.naver_m.repository.CartRepository;
 import com.nano.naver_m.repository.ProductRepository;
 import com.nano.naver_m.repository.UserRepository;
+import com.nano.naver_m.services.CartService;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
@@ -40,6 +41,8 @@ public class CartController {
 	private final OrderDetailsResourceAssembler assembler;
 	private final UserRepository userRepository;
 	private final ProductRepository productRepository;
+	@Autowired
+	CartService cartService;
 //	@Autowired ProductRepository productRepository;
 	
 	Logger logger = LoggerFactory.getLogger(CartController.class);
@@ -70,14 +73,12 @@ public class CartController {
 	
 	@RequestMapping(method = RequestMethod.POST, value = "/users/{id}/cart", produces = {MediaType.APPLICATION_JSON_VALUE})
 	public ResponseEntity<OrderDetailsResource>addToCart(@RequestBody OrderDetails newOrder){
-		System.out.println("going through controller");
-		System.out.println(newOrder.getProductId());
-		OrderDetails order = repository.save(newOrder);
+		OrderDetails order = cartService.addToCart(newOrder);
 
 		return ResponseEntity
 				//change allFromUser to one() when one() is created...
-				.created(linkTo(methodOn(CartController.class).allFromUser(newOrder.getUserId())).toUri())
-				.body(assembler.toResource(newOrder));
+				.created(linkTo(methodOn(CartController.class).allFromUser(order.getUserId())).toUri())
+				.body(assembler.toResource(order));
 	}
 
 

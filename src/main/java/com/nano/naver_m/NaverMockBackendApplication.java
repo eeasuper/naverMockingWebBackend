@@ -47,8 +47,8 @@ public class NaverMockBackendApplication {
 			if(!userRepository.existsById((long)1)){
 				String encryptedPassword = this.passwordEncoder.encode("password");
 				SiteUser user = userRepository.save(new SiteUser("name","username", encryptedPassword ,"email@email.com"));
-				Product product = productRepository.save(new Product("[대구백화점 1관] [시에로코스메틱]유니 어 데이",20000));
-				Product product2 = productRepository.save(new Product("[PUPA] 멀티플레이 트리플 퍼포즈 아이펜슬 5종",22000));
+				productRepository.save(new Product("[대구백화점 1관] [시에로코스메틱]유니 어 데이",20000));
+				productRepository.save(new Product("[PUPA] 멀티플레이 트리플 퍼포즈 아이펜슬 5종",22000));
 				productRepository.save(new Product("[시세이도] 맨 토탈 리바이탈라이저 라이트 플루이드",69700));
 				productRepository.save(new Product("[비디비치](신세계강남점)[2월] 퍼펙트 브이 핏 쿠션 (정품 픽서 증정)",48700));
 				productRepository.save(new Product("[시세이도] 트렌스루센트 프레스드 파우더",46750));
